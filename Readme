@@ -23,3 +23,5 @@
 23.JSONObjectConverter 将数据以JSON字符串存库/从JSON字符串数据读库转换为JSONObject的转换器
 24.ListConverters 英文逗号分隔的字符串数据与List类型的转换器
 25.SetConverters 英文逗号分隔的字符串数据与Set类型的转换器
+26.IDCardUtil 身份证号工具类
+27.ValidUtils 正则表达式集合
