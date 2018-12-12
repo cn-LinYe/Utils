@@ -1,0 +1,141 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+public class MorseCode{
+	
+	Map<Character, String> maplist = new HashMap<Character, String>();// 摩尔斯编码表集合
+	 
+	public MorseCode() {
+		maplist.put('A', ".-");
+		maplist.put('B', "-...");
+		maplist.put('C', "-.-.");
+		maplist.put('D', "-..");
+		maplist.put('E', ".");
+		maplist.put('F', "..-.");
+		maplist.put('G', "--.");
+		maplist.put('H', "....");
+		maplist.put('I', "..");
+		maplist.put('G', ".---");
+		maplist.put('K', "-.-");
+		maplist.put('L', ".-..");
+		maplist.put('M', "--");
+		maplist.put('N', "-.");
+		maplist.put('O', "---");
+		maplist.put('P', ".--.");
+		maplist.put('Q', "--.-");
+		maplist.put('R', ".-.");
+		maplist.put('S', "...");
+		maplist.put('T', "-");
+		maplist.put('U', "..-");
+		maplist.put('V', "...-");
+		maplist.put('W', ".--");
+		maplist.put('X', "-..-");
+		maplist.put('Y', "-.--");
+		maplist.put('Z', "--..");
+ 
+		/* 数字电码0-9 */
+		maplist.put('0', "-----");
+		maplist.put('1', ".----");
+		maplist.put('2', "..---");
+		maplist.put('3', "...--");
+		maplist.put('4', "....-");
+		maplist.put('5', ".....");
+		maplist.put('6', "-....");
+		maplist.put('7', "--...");
+		maplist.put('8', "---..");
+		maplist.put('9', "----.");
+ 
+		/* 标点符号，可自增删 */
+		maplist.put(',', "--..--"); // ,逗号
+		maplist.put('.', ".-.-.-"); // .句号
+		maplist.put('?', "..--.."); // ?问号
+		maplist.put('!', "-.-.--"); // !感叹号
+		maplist.put('\'', ".----.");// '单引号
+		maplist.put('\"', ".-..-.");// "引号
+		maplist.put('=', "-...-"); 	// =等号
+		maplist.put(':', "---..."); // :冒号
+		maplist.put(';', "-.-.-."); // ;分号
+		maplist.put('(', "-.--."); 	// (前括号
+		maplist.put(')', "-.--.-"); // )后括号
+		maplist.put(' ', " ");		// 留空格，这里的星号是自定义的
+	}
+
+	char plaintext[]; // 明文
+	String ciphertext[]; // 密文
+	static StringBuffer plainStr = new StringBuffer(" ");	// 明文字符串
+	static StringBuffer cipherStr = new StringBuffer(" ");	// 密文字符串
+	// 实例化对照表对象
+	ContrastList C = new ContrastList();
+	
+	public static void main(String[] args) {
+		System.out.println("************ 欢迎使用摩尔斯电码程序  **************");
+		Test m = new Test();
+		do {
+			plainStr = new StringBuffer(" ");
+			cipherStr = new StringBuffer(" ");	
+			m.init();	// 初始化
+			m.Encryption();	// 加密
+			m.Decryption();	// 解密
+		}while(true);
+	}
+	
+	void init(){
+		System.out.println("请输入一段明文：");
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		while (true) {
+			// 正则验证 字母/数字/空格 , . ? + \ / : ; ! = ( )
+			Pattern p =Pattern.compile("^[\\s,\\w,\\.,\\?,\\+,:,;,!,',\",=,\\(,\\)]+$"); 
+			String str;
+			try {
+				str = bf.readLine();
+				Matcher m= p.matcher(str);
+				if(m.find()){
+					plaintext = str.toUpperCase().toCharArray();	// 将输入字符转换大写数组字符类型
+					break;
+				}
+			} catch (IOException e) {
+			}	
+			System.out.println("未按规则输入..请重新输入..");
+		}
+	}
+	
+	/**
+	 * 加密
+	 */
+	void Encryption(){
+		for(int i=0; i<plaintext.length; i++){
+			char tmp = plaintext[i];
+			/*	字母		*/
+			if(maplist.containsKey(tmp))
+				cipherStr.append(maplist.get(tmp)).append(" ");	// 追加空格
+		}
+		ciphertext = cipherStr.toString().split(" ");
+		System.out.println("加密后："+cipherStr);
+	}
+	
+	/**
+	 * 解密
+	 */
+	void Decryption(){
+		for(int i=1; i<ciphertext.length; i++){
+			String tmp = ciphertext[i];
+			/*	字母		*/
+			if(maplist.containsValue(tmp)){
+				for (Entry<Character, String> s : maplist.entrySet()) {
+					if(tmp.equals(s.getValue())){
+						plainStr.append(s.getKey().toString().toLowerCase());
+					}
+				}
+			}
+		}
+		System.out.println("解密后："+plainStr);
+	}
+	
+}
